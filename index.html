@@ -82,259 +82,55 @@
                 </header>
                 <h2>Unlocking the Visual World: Harnessing the Lottery Ticket Hypothesis for State-of-the-Art Monocular
                     Depth Estimation in Embedded Glasses to Empower the Visually Impaired.</h2>
-                <!-- 
-                <a class="image fit"><img src="images/EP50-reduce.png" alt="EP50-reduce" /></a>
-                -->
+                    <a class="image fit"><img src="images/brightsight_implementation.png" alt="EP50-reduce" /></a>
+
                 <h2>
                     Abstract
                 </h2>
                 <p>
-                    This scientific paper introduces a method to compress state-of-the-art depth estimators using the
-                    lottery ticomputercket hypothesis. The objective is to enable real-time depth estimation on embedded
-                    glasses, facilitating safe navigation for visually impaired individuals. By employing transformer
-                    backbones instead of convolutional networks, the proposed MiDaS v3.0 DPT-L approach revolutionizes
-                    dense vision estimation. However, direct implementation of MiDaS or Adabins on embedded glasses
-                    faces challenges, such as low FPS on single board computers.
-
-                    The main motivation behind this project is to empower visually impaired individuals to navigate
-                    unfamiliar environments and avoid obstacles. As a proof of concept, the pruned model is implemented
-                    on a Raspberry Pi Model 3B. The model determines the optimal steering angle by analyzing a
-                    horizontal strip of average bins and evaluating three criteria based on the generated depth map. The
-                    research aims to demonstrate the feasibility of incorporating haptic feedback for obstacle avoidance
-                    into existing glasses for the visually impaired, utilizing their single board computer monocular
-                    camera products.
-
-                    The experimental results demonstrate that achieving an FPS of 20 is feasible. MiDaS exhibits the
-                    most promising performance due to its higher accuracy at this frame rate, thereby highlighting the
-                    potential for enhancing the functionality of glasses for the visually impaired.
-
+                    This paper presents the deep learning approach to help the visually impaired in an object detection
+                    task: recognising the gender of people in their proximate surrounding. By use of images coming from a RPI
+                    WWCAM2 monocular camera, the person is first detected , i.e. localized in the image, and then classified to
+                    one of the two genders. In order to perform gender detection in real-time, the use of transfer learning together
+                    with a single-stage object detection algorithm was investigated. Based on the number of processed frames per
+                    second (FPS) and the mean average precision (mAP), it was concluded that fine-tuning a pre-trained YOLOv4
+                    algorithm on customized versions of the Pascal VOC 2007 dataset and the CelebA dataset is best suited for this
+                    task.
                 </p>
-                <h2>
-                    Introduction
-                </h2>
                 <p>
-                    Visual impairment presents significant challenges for individuals worldwide, particularly when
-                    navigating unfamiliar environments, often resulting in potential injuries. Traditional solutions
-                    such as guide dogs and white canes have inherent limitations. While white canes provide feedback
-                    upon physical contact, they offer a finite line of perception in a three-dimensional space.
-                    Conversely, guide dogs map the entire three-dimensional world but possess a different perspective
-                    than humans, potentially leading to errors in collision estimations. This paper proposes a novel
-                    approach to overcome these limitations by utilizing a monocular camera in conjunction with a
-                    state-of-the-art monocular depth estimator to infer depth maps of the surroundings.
+                    Additional information can be found in the downloadable PDF of the BSc Thesis paper.
 
-                    Existing glasses designed for the visually impaired, such as those from Envision, primarily focus on
-                    object detection and provide audio messages for detected objects. However, this approach lacks
-                    contextual understanding and inundates users with overwhelming audio messages. This study aims to
-                    leverage inferred depth maps to provide haptic feedback, freeing visually impaired individuals from
-                    excessive audio messages and enabling them to navigate independently. To achieve this goal, it is
-                    crucial to reduce the size of state-of-the-art depth estimation models, as they are initially too
-                    large for implementation in existing glasses.
-
-                    To address this, the lottery ticket hypothesis will be applied to two state-of-the-art models: MiDaS
-                    v3.0 DPT-L and Adabins. These models were selected based on a comprehensive literature review,
-                    highlighting their potential as the fastest and most efficient options. MiDaS v3.0 DPT-L, in
-                    particular, was chosen due to its exceptional number of parameters compared to other versions with
-                    similar performance. It is anticipated that applying the lottery ticket hypothesis will
-                    significantly reduce the number of parameters and inference time. By implementing and integrating
-                    the reduced models into existing glasses, visually impaired individuals can navigate unfamiliar
-                    environments, avoid obstacles, and receive contextual haptic feedback, thereby enhancing their
-                    independence and safety.
-
-                    Motivated by the goal of empowering visually impaired individuals, this project focuses on
-                    developing a proof of concept implementation using a Raspberry Pi Model 3B. The pruned model
-                    analyzes a horizontal strip of average bins and evaluates three criteria based on the generated
-                    depth map to determine the optimal steering angle. The research aims to demonstrate the feasibility
-                    of incorporating compressed depth estimation models into embedded glasses, revolutionizing obstacle
-                    avoidance capabilities and enabling visually impaired individuals to navigate unfamiliar
-                    environments with improved context and independence.
-                </p>
-
-                <h2>
-                    Literature research
-                </h2>
-
-                <h3>Adabins</h3>
-                <p>
-                    Adabins backbone relies on efficientnet. To understand this backbone we guide you through the
-                    evolutionary
-                    path of the Fused-MBConv block, which is efficientnets main building block. The Fused-MBConv block
-                    is a type of
-                    convolutional neural network (CNN) block that has proven to be effective in improving the accuracy
-                    and efficiency of image recognition models.
-
-                    The Mobilenets Depthwise seperable convolution (DSConv) was one of the earliest architectural
-                    innovations
-                    that led to the development of the Fused-MBConv block. It involves a two-step convolution process
-                    that separates the spatial and depth-wise convolutional operations, resulting in significant
-                    reduction of the computational cost.
-
-                    More details on DSConv in the downloadable pdf:
-
-
-                <ul class="actions special">
-                    <li><a href="MobileNets.pdf" class="button large">Download PDF</a></li>
-                </ul>
-
-
-                The inverted residuals and linear bottlenecks were introduced in the MobileNetV2 architecture, which
-                is an extension of the Mobilenets. These architectural innovations helped to address the problem of
-                poor accuracy in Mobilenets and further improved the computational efficiency of the model.
-
-                The squeeze and excitation block is another architectural innovation that influenced the
-                evolutionary path. The Squeeze-and-Excitation paper proposed a mechanism to selectively emphasize
-                important channels while suppressing less important ones in convolutional layers to improve accuracy
-                on image classification benchmarks.
-
-                All of these architectural innovations eventually led to the development of the MBConv block, which
-                incorporates the DSConv of Mobilenets, the inverted residuals and linear
-                bottlenecks of MobileNetV2, and the squeeze and excitation block. The Fused-MBConv block combines
-                two of the operations within the MBConv block, leading to faster computation.
-
-                More details on mobilenetv2, MBConv and Fused-MBConv in the downloadable pdf:
-
-                <ul class="actions special">
-                    <li><a href="mobilenetv2_efficientnet.pdf" class="button large">Download PDF</a></li>
-                </ul>
-                </p>
-
-                to be continued
-
-                <h3> MiDaS</h3>
-
-                to be continued
-
-                <h3> Lottery ticket hypothesis</h3>
-
-                The lottery ticket hypothesis, as described by Frankle and Carbin (2019), posits that a
-                randomly-initialized, dense neural network contains a subnetwork that, when trained independently, can
-                achieve the same test accuracy as the original network within a comparable number of training
-                iterations. This implies that a significant portion of the network's parameters can be pruned, resulting
-                in a computationally lighter model.
-
-                <h4> Application</h4>
-                In our specific case, the lottery ticket hypothesis holds promising potential as we aim to deploy these
-                models on small single-board CPUs. To identify the lottery ticket parameters, we first train the
-                complete model until it reaches an adequate level of training. Subsequently, we retrain the model using
-                only the largest 10-20% of the weights, while maintaining the same initialization as the initial
-                training process.
-                <h2>
-                    Methods
-                </h2>
-                <!-- 
-                <p>
-                    DARTS (Differentiable Architecture Search) is a method for automating the search for neural
-                    network architectures. The goal is to find the best architecture for a given task without
-                    requiring human expertise in designing neural networks.
-
-                    In the search stage, the DARTS algorithm uses a differentiable relaxation of the architecture
-                    search space to learn the best architecture. This involves learning the weights of the different
-                    network operations in the architecture. The operations out of which DARTS could choose where
-                    DSConv,
-                    MBConv and Fused-MBConv.
-
-                    The DARTS search was based on the Fashion-MNIST dataset. The Fashion-MNIST dataset is a popular
-                    benchmark dataset used in machine learning and computer vision research. It consists of 70,000
-                    grayscale images of 28x28 pixels each, divided into 10 classes, with 7,000 images per class. The
-                    classes include T-shirts/tops, trousers, pullovers, dresses, coats, sandals, shirts, sneakers,
-                    bags, and ankle boots. The dataset is a more challenging alternative to the classic MNIST
-                    dataset, as it features more complex images with greater variability in the appearance of the
-                    different classes.
-
-                    It is worth noting that the distribution of the classes is roughly balanced, with each class
-                    accounting for 10% of the dataset. This makes the dataset suitable for evaluating the
-                    performance of machine learning algorithms in a multi-class classification setting.
-
-                    In the context of DARTS (Differentiable Architecture Search), the terms "normal" and "reduce"
-                    are used to refer to two distinct types of cells that are utilized in the process of
-                    architecture search.
-
-                    A "normal" cell is defined as a cell that maintains an unchanged spatial resolution between the
-                    input and output, whereas a "reduce" cell is a cell that reduces the spatial resolution between
-                    the input and output.
-
-                    More details on DARTS in the downloadable pdf:
 
                 </p>
                 <ul class="actions special">
-                    <li><a href="DARTS.pdf" class="button large">Download PDF</a></li>
+                    <li><a href="paper_BSc_Henk_Jekel.pdf" class="button large">Download PDF</a></li>
                 </ul>
-                -->
                 <h2>
-                    Results
+                    Conclusion 
                 </h2>
-                <!-- 
                 <p>
-                    The experiments conducted involved training DARTS on the FashionMNIST dataset for 50 epochs,
-                    utilizing the only available operations DSConv, MBConv, and Fused-mbconv. Two visualizations of
-                    the training process were presented, which included a gif that displayed the progress of each
-                    epoch for both the normal and reduce cells. Additionally, an image was provided that contained
-                    two plots demonstrating the progress of the training: the first plot indicated the progression
-                    of the loss throughout the training process, while the second plot showed the corresponding
-                    accuracy progression. These visualizations and plots were indicative of the effectiveness and
-                    efficiency of the training process, and demonstrated the potential of DARTS to be employed in
-                    real-world tasks.
-
-
-
-
-
-                    <a class="image fit"><img src="images/normal.gif" alt="normal" /></a>
-                    <a class="image fit"><img src="images/reduce.gif" alt="reduce" /></a>
-                    <a class="image fit"><img src="images/loss_accuracy.png" alt="loss_accuracy" /></a>
-
-                    The training log can be found on github:
-                <ul class="actions special">
-                    <li><a href="https://github.com/HAJEKEL/pt.darts/blob/master/searchs/fashionmnist/fashionmnist.log"
-                            class="button large">Visit training log</a></li>
-                </ul>
-
-
+                    The main aim of this thesis was to find the best deep
+                    learning object detection architecture for a gender detection model to aid the visually impaired in their social life. A literature comparison of the three state
+                    of the art object detection architectures showed that,
+                    from the three one-stage object detection architectures, the YOLOv4 architecture outperforms all other
+                    architectures. Therefore, based on this research, the
+                    YOLOv4 architecture seemingly has the most potential for the artificial visual system. To support this
+                    conclusion, further research should aim to modify the
+                    head of the three state of the art object detection architectures to the gender detection task, train and test
+                    the modified architectures on a representative gender
+                    dataset, and finally compare the numerical results.
                 </p>
-                -->
-                <h2>
-                    Conclusion
-                </h2>
-
-                --> <!-- 
-                <p>
-                    The high accuracy rates and low loss observed in both the training and validation indicate that
-                    the training process was successful. The model has effectively learned the underlying patterns
-                    in the data, as evidenced by the consistently low training loss. Furthermore, analysis of the
-                    log of the last epoch suggests that the reduce operations generally outperform the normal
-                    operations in terms of the softmax values for Alpha - normal and Alpha - reduce. This finding
-                    suggests that the reduce operations are more important for achieving good performance on
-                    FashionMNIST. Of note, the fusedmbconv operation has the highest alpha values among all
-                    operations, underscoring its critical role in achieving strong results on the FashionMNIST
-                    dataset. Taken together, these results demonstrate that the model has been trained effectively
-                    and performs well on the given data.
-
-
-
-                </p>
-                -->
                 <h2>
                     Code implementation
                 </h2>
-                <!-- 
+                
                 <p>
                     Code for this blog:
                 <ul class="actions special">
-                    <li><a href="https://github.com/HAJEKEL/EfficientNetV2_paper_reproduction/tree/website"
+                    <li><a href="https://github.com/HAJEKEL/BrightSight/tree/website"
                             class="button large">WEBSITE</a></li>
                 </ul>
-                <p> Code to reproduce the training using google colab and google compute engine:
-                </p>
-                <ul class="actions special">
-                    <li><a href="https://github.com/HAJEKEL/EfficientNetV2_paper_reproduction"
-                            class="button large">TRAINING</a></li>
-                </ul>
-                <p> Code for the DARTS implementation with operations DSConv MBConv and Fused-MBConv:
-                </p>
-                <ul class="actions special">
-                    <li><a href="https://github.com/HAJEKEL/pt.darts class="button large">DARTS</a></li>
-                </ul>
-                </p>
-                -->
+                
             </article>
 
 
